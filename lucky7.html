@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<body style="text-align: center;">
+<h2>Welcome to Lucky 7 Game</h2>
+
+<p style="color: brown; font-weight: bold; cursor: pointer;" id="gameoptions">
+  <small>Choose an option to PLAY</small> <br>
+  <span onclick="getplayoption('below7')">[Below 7]</span>
+  <span onclick="getplayoption('lucky7')">[Lucky 7]</span>
+  <span onclick="getplayoption('above7')">[Above 7]</span>
+</p>
+
+<p id="spindicediv" style="display: none;">
+  Game Result <br/> 
+  Dice 1 : <span id="dice1"></span> <br/> 
+  Dice 2 : <span id="dice2"></span> <br/> 
+  <b>Total : <span id="dicetotal"></span></b> <br/> <br/> 
+  You are playing : <b><span id="paying"></span></b> <br/> <br/>   
+  You <span id="youwin"></span>! Your balance is now Rs. <span id="balance"></span>
+</p>
+
+<p style="color: brown; font-weight: bold; display: none;" id="resetoptions">
+  <span onclick="resetgame()">[Reset and Play Again]</span>
+  <span onclick="continueplaying()">[Continue Playing]</span>
+</p>
+
+</body>
+<script type="text/javascript">
+// alert(33);
+var balance = 100;
+var youwin = "Lose";
+var optionnG;
+
+const masterArray = {
+  'below7' : { title : "Below 7", betprice : 10, winprice : 20  },
+  'above7' : { title : "Above 7", betprice : 10, winprice : 20  },
+  'lucky7' : { title : "Lucky 7", betprice : 10, winprice : 30  }
+}
+function getplayoption(optionn) {
+  optionnG = optionn; 
+  // console.log(optionn);
+  document.getElementById("gameoptions").style.display = 'none';
+  document.getElementById("spindicediv").style.display = 'block';
+  document.getElementById("resetoptions").style.display = 'block';
+  spindice(optionn);
+}
+
+function randomIntFromInterval(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function continueplaying() {
+  if(balance<0) {
+    resetgame()
+  }
+  spindice(optionnG);
+}
+function resetgame() {
+  balance = 100;
+  document.getElementById("gameoptions").style.display = 'block';
+  document.getElementById("spindicediv").style.display = 'none';
+  document.getElementById("resetoptions").style.display = 'none';
+}
+
+function spindice(optionn) {
+  let dice1 = randomIntFromInterval(1, 6);
+  let dice2 = randomIntFromInterval(1, 6);
+  let spinnednum = dice1 + dice2;
+  // console.log(spinnednum);
+  document.getElementById("dice1").innerHTML = dice1;
+  document.getElementById("dice2").innerHTML = dice2;
+  document.getElementById("dicetotal").innerHTML = spinnednum;
+  document.getElementById("balance").innerHTML = balance;
+  
+  showResult(optionn, spinnednum);
+}
+
+function showResult(optionn, spinnednum) {
+  let youwin = "Win";
+  console.log('=====> ' + optionn);
+  
+  switch (optionn) {
+    case 'below7':
+      balance -= masterArray[optionn].betprice;
+      if(spinnednum < 7) {
+        balance += masterArray[optionn].winprice;
+        console.log(masterArray[optionn], balance);
+        youwin =  "Win"; 
+      } else {
+        youwin = "Lose"; 
+      }
+      break;
+    case 'above7':
+      balance -= masterArray[optionn].betprice;
+      if(spinnednum > 7) {
+        balance += masterArray[optionn].winprice;
+        console.log(masterArray[optionn], balance);
+        youwin =  "Win"; 
+      } else {
+        youwin = "Lose"; 
+      }
+      break;
+    case 'lucky7':
+      balance -= masterArray[optionn].betprice;
+      if(spinnednum == 7) {
+        balance += masterArray[optionn].winprice;
+        console.log(masterArray[optionn], balance);
+        youwin =  "Win"; 
+      } else {
+        youwin = "Lose"; 
+      }
+      break;
+  
+    default:
+      break;
+  }
+
+
+  // if (spinnednum < 7) {
+  //   youwin = "Lose";
+  // } else if (spinnednum === 7) {
+  //   youwin = "Win";
+  // } else {
+  //   youwin = "Lose";
+  // }
+
+  document.getElementById("balance").innerHTML = balance;
+  document.getElementById("youwin").innerHTML = youwin;
+  document.getElementById("paying").innerHTML = masterArray[optionn].title;
+  
+}
+
+</script>
+</html>
